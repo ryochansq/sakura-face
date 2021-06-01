@@ -2,7 +2,8 @@ name: Build and deploy website
 
 on:
   push:
-    branches: [master]
+    branches:
+      - main
 
 jobs:
   build:
