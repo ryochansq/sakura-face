@@ -1,4 +1,4 @@
-import React, { VFC, useState, useEffect } from 'react';
+import React, { VFC, useState } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
@@ -31,10 +31,12 @@ const useStyles = makeStyles(() =>
 const App: VFC = () => {
   const classes = useStyles();
   const [imageData, setImageData] = useState<string | undefined>(undefined);
-  const [detect, faces, detectError, isDetectLoading] = useDetect();
-  const [findSimilar, students, findSimilarError, isFindSimilarLoading] =
-    useFindSimilar();
-  const loading = isDetectLoading || isFindSimilarLoading;
+  // const [detect, faces, detectError, isDetectLoading] = useDetect();
+  // const [findSimilar, students, findSimilarError, isFindSimilarLoading] =
+  //   useFindSimilar();
+  const [detect, faces] = useDetect();
+  const [findSimilar, students] = useFindSimilar();
+  // const loading = isDetectLoading || isFindSimilarLoading;
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = e;
