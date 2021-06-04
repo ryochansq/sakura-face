@@ -107,14 +107,14 @@ const App: VFC = () => {
               </Button>
             </Grid>
           )}
-          <Grid item container justify="center">
-            {students.length > 0 &&
-              students.map((student) => (
-                <Typography key={student.name}>
+          {students.length > 0 &&
+            students.map((student) => (
+              <Grid item container justify="center" key={student.name}>
+                <Typography>
                   {student.name} : {student.confidence * 100}%
                 </Typography>
-              ))}
-          </Grid>
+              </Grid>
+            ))}
           <Grid item container justify="flex-end">
             <Typography variant="caption">
               開発：{' '}
