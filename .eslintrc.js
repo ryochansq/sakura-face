@@ -47,7 +47,9 @@ module.exports = {
         allowAsStatement: true,
       }
     ],
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"]
   },
   settings: {
     'import/resolver': {
