@@ -18,10 +18,6 @@ const useStyles = makeStyles(() =>
     body: {
       marginTop: 8,
     },
-    img: {
-      width: '100%',
-      objectFit: 'scale-down',
-    },
   })
 );
 
@@ -45,7 +41,7 @@ const App: VFC = () => {
           <Grid item>
             <Typography>
               画像に写っている人が、さくら学院の中で
-              <b>どの生徒にどのくらい似ている</b>のか判定するよ！
+              <b>どの生徒にどのくらい似ているか</b>判定するよ！
             </Typography>
             <Typography variant="caption">
               ※画像は判定のため
