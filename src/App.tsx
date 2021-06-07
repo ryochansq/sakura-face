@@ -1,16 +1,14 @@
-import React, { VFC, useState } from 'react';
+import React, { VFC } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
-  Button,
   Container,
   Grid,
   Link,
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import useDetect from './hooks/useDetect';
-import useFindSimilar from './hooks/useFindSimilar';
+import Pictures from './components/Pictures';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -18,7 +16,6 @@ const useStyles = makeStyles(() =>
       flexGrow: 1,
     },
     body: {
-      // padding: 0,
       marginTop: 8,
     },
     img: {
@@ -30,29 +27,6 @@ const useStyles = makeStyles(() =>
 
 const App: VFC = () => {
   const classes = useStyles();
-  const [imageData, setImageData] = useState<string | undefined>(undefined);
-  // const [detect, faces, detectError, isDetectLoading] = useDetect();
-  // const [findSimilar, students, findSimilarError, isFindSimilarLoading] =
-  //   useFindSimilar();
-  const [detect, faces] = useDetect();
-  const [findSimilar, students] = useFindSimilar();
-  // const loading = isDetectLoading || isFindSimilarLoading;
-
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = e;
-    const { files } = target;
-    const file = files && files.length ? files[0] : null;
-    if (!file) return;
-    detect(file);
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const { result } = reader;
-      setImageData(result as string);
-    };
-  };
-
-  const onClick = () => findSimilar(faces[0].faceId);
 
   return (
     <>
@@ -84,37 +58,7 @@ const App: VFC = () => {
               へ送信されます、それ以外には使用されません
             </Typography>
           </Grid>
-          <Grid item container justify="center">
-            <Button variant="contained" color="primary" component="label">
-              画像を選択
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={onChangeInput}
-              />
-            </Button>
-          </Grid>
-          {imageData && (
-            <Grid item container justify="center">
-              <img src={imageData} alt="選択した画像" className={classes.img} />
-            </Grid>
-          )}
-          {faces.length > 0 && (
-            <Grid item container justify="center">
-              <Button variant="contained" color="primary" onClick={onClick}>
-                判定
-              </Button>
-            </Grid>
-          )}
-          {students.length > 0 &&
-            students.map((student) => (
-              <Grid item container justify="center" key={student.name}>
-                <Typography>
-                  {student.name} : {student.confidence * 100}%
-                </Typography>
-              </Grid>
-            ))}
+          <Pictures />
           <Grid item container justify="flex-end">
             <Typography variant="caption">
               開発：{' '}
