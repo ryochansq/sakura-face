@@ -5,6 +5,7 @@ import {
   Container,
   Grid,
   Link,
+  Paper,
   Toolbar,
   Typography,
 } from '@material-ui/core';
@@ -16,7 +17,7 @@ const useStyles = makeStyles(() =>
       flexGrow: 1,
     },
     body: {
-      marginTop: 8,
+      padding: 8,
     },
   })
 );
@@ -33,37 +34,39 @@ const App: VFC = () => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="sm" className={classes.body}>
-        <Grid container spacing={2}>
-          <Grid item container justify="center">
-            <img src="/camera_kao_ninshiki.png" alt="顔認識" />
+      <Container maxWidth="sm">
+        <Paper className={classes.body}>
+          <Grid container spacing={2}>
+            <Grid item container justify="center">
+              <img src="camera_kao_ninshiki.png" alt="顔認識" />
+            </Grid>
+            <Grid item>
+              <Typography>
+                画像に写っている人が、さくら学院の中で
+                <b>どの生徒にどのくらい似ているか</b>判定するよ！
+              </Typography>
+              <Typography variant="caption">
+                ※画像は判定のため
+                <Link
+                  href="https://azure.microsoft.com/ja-jp/services/cognitive-services/face/#demo"
+                  target="_blank"
+                >
+                  Microsoft
+                </Link>
+                へ送信されます、それ以外には使用されません
+              </Typography>
+            </Grid>
+            <Pictures />
+            <Grid item container justify="flex-end">
+              <Typography variant="caption">
+                開発：{' '}
+                <Link href="https://twitter.com/ryochan_metal" target="_blank">
+                  @ryochan_metal
+                </Link>
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Typography>
-              画像に写っている人が、さくら学院の中で
-              <b>どの生徒にどのくらい似ているか</b>判定するよ！
-            </Typography>
-            <Typography variant="caption">
-              ※画像は判定のため
-              <Link
-                href="https://azure.microsoft.com/ja-jp/services/cognitive-services/face/#demo"
-                target="_blank"
-              >
-                Microsoft
-              </Link>
-              へ送信されます、それ以外には使用されません
-            </Typography>
-          </Grid>
-          <Pictures />
-          <Grid item container justify="flex-end">
-            <Typography variant="caption">
-              開発：{' '}
-              <Link href="https://twitter.com/ryochan_metal" target="_blank">
-                @ryochan_metal
-              </Link>
-            </Typography>
-          </Grid>
-        </Grid>
+        </Paper>
       </Container>
     </>
   );

@@ -34,6 +34,7 @@ const Pictures: VFC = () => {
     if (!file) return;
 
     setLoading(true);
+    setFaces([]);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -54,12 +55,6 @@ const Pictures: VFC = () => {
 
   return (
     <>
-      <Grid item container justify="center">
-        <Button variant="contained" color="primary" component="label">
-          画像を選択
-          <input type="file" accept="image/*" hidden onChange={onChangeInput} />
-        </Button>
-      </Grid>
       {imageData && (
         <Grid item container>
           <Grid item container direction="row">
@@ -77,27 +72,26 @@ const Pictures: VFC = () => {
                 alt="選択画像"
                 className={classes.loaded}
               />
-              {!loading &&
-                faces.map((face) => (
-                  <button
-                    key={face.faceId}
-                    onClick={() => onClickFaceRect(face.faceId)}
-                    type="button"
-                    style={{
-                      backgroundColor: 'transparent',
-                      border: '2px solid blue',
-                      color: 'transparent',
-                      cursor: 'pointer',
-                      position: 'absolute',
-                      left: `${face.faceRectangle.left * widthRatio}%`,
-                      top: `${face.faceRectangle.top * heightRatio}%`,
-                      width: `${face.faceRectangle.width * widthRatio}%`,
-                      height: `${face.faceRectangle.height * heightRatio}%`,
-                    }}
-                  >
-                    :
-                  </button>
-                ))}
+              {faces.map((face) => (
+                <button
+                  key={face.faceId}
+                  onClick={() => onClickFaceRect(face.faceId)}
+                  type="button"
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: '2px solid blue',
+                    color: 'transparent',
+                    cursor: 'pointer',
+                    position: 'absolute',
+                    left: `${face.faceRectangle.left * widthRatio}%`,
+                    top: `${face.faceRectangle.top * heightRatio}%`,
+                    width: `${face.faceRectangle.width * widthRatio}%`,
+                    height: `${face.faceRectangle.height * heightRatio}%`,
+                  }}
+                >
+                  :
+                </button>
+              ))}
             </Grid>
             <Grid item container xs={6} justify="center" alignItems="center">
               fuga
@@ -105,14 +99,33 @@ const Pictures: VFC = () => {
           </Grid>
         </Grid>
       )}
-      {students.length > 0 &&
-        students.map((student) => (
+      {!students.length && (
+        <Grid item container justify="center">
+          <Button
+            variant="contained"
+            color="primary"
+            component="label"
+            disabled={loading}
+          >
+            画像を選択
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={onChangeInput}
+            />
+          </Button>
+        </Grid>
+      )}
+      <Grid item container>
+        {students.map((student) => (
           <Grid item container justify="center" key={student.name}>
             <Typography>
-              {student.name} : {student.confidence * 100}%
+              {student.name} : {(student.confidence * 100).toFixed(1)}%
             </Typography>
           </Grid>
         ))}
+      </Grid>
     </>
   );
 };
