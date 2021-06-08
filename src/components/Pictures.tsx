@@ -1,25 +1,16 @@
-import React, { VFC, useState } from 'react';
+import React, { VFC, useState, useRef } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, Typography } from '@material-ui/core';
 import { detect, findSimilar } from '../hooks/useApi';
 
 const useStyles = makeStyles(() =>
   createStyles({
-    picturesOuter: {
-      width: '100%',
-      paddingTop: '50%',
+    pictureContainer: {
       position: 'relative',
-    },
-    picturesInner: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
     },
     loaded: {
       width: '100%',
-      objectFit: 'scale-down',
+      objectFit: 'contain',
     },
   })
 );
@@ -27,9 +18,14 @@ const useStyles = makeStyles(() =>
 const Pictures: VFC = () => {
   const classes = useStyles();
   const [imageData, setImageData] = useState<string | undefined>(undefined);
+  const imgRef = useRef<HTMLImageElement>(null);
   const [faces, setFaces] = useState<Face[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(false);
   // const [selectedFaceNum, setSelectedFaceNum] = useState(-1);
+
+  const widthRatio = imgRef.current ? 100 / imgRef.current.naturalWidth : 0;
+  const heightRatio = imgRef.current ? 100 / imgRef.current.naturalHeight : 0;
 
   const onChangeInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = e;
@@ -37,6 +33,7 @@ const Pictures: VFC = () => {
     const file = files && files.length ? files[0] : null;
     if (!file) return;
 
+    setLoading(true);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -45,49 +42,67 @@ const Pictures: VFC = () => {
     };
     const newFaces = await detect(file);
     setFaces(newFaces);
+    setLoading(false);
   };
 
-  const onClick = async () => {
-    const newStudents = await findSimilar(faces[0].faceId);
+  const onClickFaceRect = async (faceId: string) => {
+    setLoading(true);
+    const newStudents = await findSimilar(faceId);
     setStudents(newStudents);
+    setLoading(false);
   };
 
   return (
     <>
-      {imageData && (
-        <Grid item container>
-          <Grid className={classes.picturesOuter}>
-            <Grid
-              className={classes.picturesInner}
-              item
-              container
-              direction="row"
-            >
-              <Grid item container xs={6} justify="center" alignItems="center">
-                <img
-                  src={imageData}
-                  alt="選択した画像"
-                  className={classes.loaded}
-                />
-              </Grid>
-              <Grid item container xs={6} justify="center" alignItems="center">
-                fuga
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      )}
       <Grid item container justify="center">
         <Button variant="contained" color="primary" component="label">
           画像を選択
           <input type="file" accept="image/*" hidden onChange={onChangeInput} />
         </Button>
       </Grid>
-      {faces.length > 0 && (
-        <Grid item container justify="center">
-          <Button variant="contained" color="primary" onClick={onClick}>
-            判定
-          </Button>
+      {imageData && (
+        <Grid item container>
+          <Grid item container direction="row">
+            <Grid
+              className={classes.pictureContainer}
+              item
+              container
+              xs={6}
+              justify="center"
+              alignItems="center"
+            >
+              <img
+                ref={imgRef}
+                src={imageData}
+                alt="選択画像"
+                className={classes.loaded}
+              />
+              {!loading &&
+                faces.map((face) => (
+                  <button
+                    key={face.faceId}
+                    onClick={() => onClickFaceRect(face.faceId)}
+                    type="button"
+                    style={{
+                      backgroundColor: 'transparent',
+                      border: '2px solid blue',
+                      color: 'transparent',
+                      cursor: 'pointer',
+                      position: 'absolute',
+                      left: `${face.faceRectangle.left * widthRatio}%`,
+                      top: `${face.faceRectangle.top * heightRatio}%`,
+                      width: `${face.faceRectangle.width * widthRatio}%`,
+                      height: `${face.faceRectangle.height * heightRatio}%`,
+                    }}
+                  >
+                    :
+                  </button>
+                ))}
+            </Grid>
+            <Grid item container xs={6} justify="center" alignItems="center">
+              fuga
+            </Grid>
+          </Grid>
         </Grid>
       )}
       {students.length > 0 &&

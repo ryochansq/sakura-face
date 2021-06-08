@@ -36,7 +36,7 @@ const App: VFC = () => {
       <Container maxWidth="sm" className={classes.body}>
         <Grid container spacing={2}>
           <Grid item container justify="center">
-            <img src="camera_kao_ninshiki.png" alt="顔認識" />
+            <img src="/camera_kao_ninshiki.png" alt="顔認識" />
           </Grid>
           <Grid item>
             <Typography>
