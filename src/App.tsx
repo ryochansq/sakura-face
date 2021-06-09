@@ -16,6 +16,9 @@ const useStyles = makeStyles(() =>
     title: {
       flexGrow: 1,
     },
+    container: {
+      padding: 0,
+    },
     body: {
       padding: 8,
     },
@@ -34,7 +37,7 @@ const App: VFC = () => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" className={classes.container}>
         <Paper className={classes.body}>
           <Grid container spacing={2}>
             <Grid item container justify="center">
