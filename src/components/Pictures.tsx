@@ -7,10 +7,12 @@ import TweetButton from './TweetButton';
 const useStyles = makeStyles(() =>
   createStyles({
     pictureContainer: {
+      width: '100%',
       position: 'relative',
     },
     loaded: {
       width: '100%',
+      height: '100%',
       objectFit: 'contain',
     },
     rightGrid: {
@@ -19,7 +21,7 @@ const useStyles = makeStyles(() =>
     studentPicture: {
       width: '100%',
       height: '100%',
-      objectFit: 'scale-down',
+      objectFit: 'contain',
     },
     tweet: {
       color: 'white',
@@ -38,8 +40,13 @@ const Pictures: VFC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFaceNum, setSelectedFaceNum] = useState(-1);
 
-  const widthRatio = imgRef.current ? 100 / imgRef.current.naturalWidth : 0;
-  const heightRatio = imgRef.current ? 100 / imgRef.current.naturalHeight : 0;
+  const rectPos = (face: Face, type: keyof Face['faceRectangle']): string => {
+    const wr = imgRef.current ? 100 / imgRef.current.naturalWidth : 0;
+    const hr = imgRef.current ? 100 / imgRef.current.naturalHeight : 0;
+    const ratio = ['left', 'width'].some((val) => val === type) ? wr : hr;
+    const px = ['left', 'top'].some((val) => val === type) ? -2 : 4;
+    return `calc(${face.faceRectangle[type] * ratio}% + ${px}px)`;
+  };
 
   const onClickFaceRect = async (faceId: string, index: number) => {
     setSelectedFaceNum(index);
@@ -101,10 +108,11 @@ const Pictures: VFC = () => {
                       color: 'transparent',
                       cursor: 'pointer',
                       position: 'absolute',
-                      left: `${face.faceRectangle.left * widthRatio}%`,
-                      top: `${face.faceRectangle.top * heightRatio}%`,
-                      width: `${face.faceRectangle.width * widthRatio}%`,
-                      height: `${face.faceRectangle.height * heightRatio}%`,
+                      padding: 0,
+                      left: rectPos(face, 'left'),
+                      top: rectPos(face, 'top'),
+                      width: rectPos(face, 'width'),
+                      height: rectPos(face, 'height'),
                     }}
                   >
                     :
