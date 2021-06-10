@@ -63,7 +63,7 @@ const Pictures: VFC = () => {
   const onClickFaceRect = async (faceId: string, index: number) => {
     setSelectedFaceNum(index);
     setLoading(true);
-    setFaces([]);
+    setStudents([]);
     try {
       const newStudents = await findSimilar(faceId);
       setStudents(newStudents);
