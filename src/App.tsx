@@ -44,7 +44,7 @@ const App: VFC = () => {
         <AppBar position="static">
           <Toolbar variant="dense">
             <Typography variant="h6" className={classes.title}>
-              さくら学院の誰に似てるかな（開発中）
+              さくら学院そっくりさん（開発中）
             </Typography>
           </Toolbar>
         </AppBar>
@@ -65,6 +65,10 @@ const App: VFC = () => {
                     Microsoft
                   </Link>
                   へ送信されます、それ以外には使用されません
+                </Typography>
+                <br />
+                <Typography variant="caption">
+                  ※顔全体が正面を向いて写っていると、認識されやすいです
                 </Typography>
               </Grid>
               <Pictures />

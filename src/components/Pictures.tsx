@@ -1,6 +1,7 @@
 import React, { VFC, useState, useRef } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
+import { AxiosError } from 'axios';
 import { detect, findSimilar } from '../hooks/useApi';
 import TweetButton from './TweetButton';
 
@@ -23,6 +24,10 @@ const useStyles = makeStyles(() =>
       height: '100%',
       objectFit: 'contain',
     },
+    message: {
+      fontWeight: 700,
+      whiteSpace: 'pre-line',
+    },
     tweet: {
       color: 'white',
       fontWeight: 700,
@@ -39,6 +44,13 @@ const Pictures: VFC = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedFaceNum, setSelectedFaceNum] = useState(-1);
+  const messages = {
+    multiple: '判定したい顔を\nタップしてください',
+    zero: '顔が検出されませんでした、別の画像をお試しください',
+    imageError: '画像の処理に失敗しました、別の画像をお試しください',
+    serverError: 'エラーが発生しました、時間をおいて再度お試しください',
+  };
+  const [message, setMessage] = useState(messages.multiple);
 
   const rectPos = (face: Face, type: keyof Face['faceRectangle']): string => {
     const wr = imgRef.current ? 100 / imgRef.current.naturalWidth : 0;
@@ -51,8 +63,13 @@ const Pictures: VFC = () => {
   const onClickFaceRect = async (faceId: string, index: number) => {
     setSelectedFaceNum(index);
     setLoading(true);
-    const newStudents = await findSimilar(faceId);
-    setStudents(newStudents);
+    setFaces([]);
+    try {
+      const newStudents = await findSimilar(faceId);
+      setStudents(newStudents);
+    } catch {
+      setMessage(messages.serverError);
+    }
     setLoading(false);
   };
 
@@ -72,10 +89,30 @@ const Pictures: VFC = () => {
       const { result } = reader;
       setImageData(result as string);
     };
-    const newFaces = await detect(file);
-    setFaces(newFaces);
-    setLoading(false);
-    if (newFaces.length === 1) await onClickFaceRect(newFaces[0].faceId, 0);
+    if (file.size > 5000000) {
+      setMessage('画像サイズが大きすぎます、別の画像をお試しください');
+      setLoading(false);
+      return;
+    }
+    try {
+      const newFaces = await detect(file);
+      setFaces(newFaces);
+      setLoading(false);
+      if (newFaces.length === 1) await onClickFaceRect(newFaces[0].faceId, 0);
+      if (newFaces.length === 0) setMessage(messages.zero);
+      else setMessage(messages.multiple);
+    } catch (err) {
+      const { response } = err as AxiosError<myError>;
+      if (!response || response.status >= 500) {
+        setMessage(messages.serverError);
+      } else {
+        // eslint-disable-next-line
+        setMessage(`${messages.imageError}\n${response.data.error.message}`);
+      }
+      setLoading(false);
+    }
+
+    // TODO: Google アナリティクス登録
   };
 
   const rectColor = (faceNum: number): string => {
@@ -139,11 +176,7 @@ const Pictures: VFC = () => {
                     />
                   );
                 return (
-                  <Typography>
-                    判定したい顔を
-                    <br />
-                    タップしてください
-                  </Typography>
+                  <Typography className={classes.message}>{message}</Typography>
                 );
               })()}
             </Grid>
@@ -178,14 +211,14 @@ const Pictures: VFC = () => {
           <Grid item container justify="center">
             <Typography>
               この人物は <b>{students[0].name}</b>{' '}
-              {students[0].confidence >= 0.7 ? 'です！' : 'に似ています！'}
+              {students[0].confidence >= 0.65 ? 'です！' : 'に似ています！'}
             </Typography>
           </Grid>
           <Grid item container>
             {students.map((student) => (
               <Grid item container justify="center" key={student.name}>
                 <Typography>
-                  {student.name} ... 類似度{' '}
+                  {student.name} ... そっくり度{' '}
                   {(student.confidence * 100).toFixed(1)}%
                 </Typography>
               </Grid>

@@ -12,3 +12,10 @@ type Student = {
   name: string;
   confidence: number;
 };
+
+type myError = {
+  error: {
+    code: string;
+    message: string;
+  };
+};
