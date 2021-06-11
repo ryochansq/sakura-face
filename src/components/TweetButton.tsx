@@ -27,7 +27,7 @@ const TweetButton: VFC<Props> = ({ students }: Props) => {
         ).toFixed(1)}%\n`,
       ''
     );
-    const text = `さくら学院顔診断で誰に似てるか診断しました！\n\n${subText}\nryochansq.github.io/sakura-face/\n\n#さくら学院 #さくら学院顔診断\n#さくら学院父兄パソコン部`;
+    const text = `さくら学院 顔診断で誰に似てるか診断しました！\n\n${subText}\nryochansq.github.io/sakura-face/\n\n#さくら学院 #さくら学院顔診断\n#さくら学院父兄パソコン部`;
     const encodedText = encodeURIComponent(text);
     const intent = `https://twitter.com/intent/tweet?text=${encodedText}`;
     window.open(intent);
