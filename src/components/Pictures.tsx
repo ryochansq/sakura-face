@@ -111,8 +111,6 @@ const Pictures: VFC = () => {
       }
       setLoading(false);
     }
-
-    // TODO: Google アナリティクス登録
   };
 
   const rectColor = (faceNum: number): string => {

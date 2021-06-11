@@ -44,7 +44,7 @@ const App: VFC = () => {
         <AppBar position="static">
           <Toolbar variant="dense">
             <Typography variant="h6" className={classes.title}>
-              さくら学院そっくりさん（開発中）
+              さくら学院 顔診断（開発中）
             </Typography>
           </Toolbar>
         </AppBar>
